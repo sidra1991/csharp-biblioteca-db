@@ -78,33 +78,69 @@ foreach (var item in biblioteca.ListaUtenti)
     Console.WriteLine(item.Nome);
 }
 
-try
-{
-    connessioneSql.Open();
-    string query = "INSER INTO Utente (cognome, nome, email, password, numeroTelefono) VALUES (@dato1, @dato2, @dato3, @dato4, @dato5)";
-    SqlCommand cmd = new SqlCommand(query, connessioneSql);
-
-    foreach (var item in biblioteca.ListaUtenti)
-    {
-        cmd.Parameters.Add(new SqlParameter("@dato1",item.Cognome));
-        cmd.Parameters.Add(new SqlParameter("@dato2", item.Nome));
-        cmd.Parameters.Add(new SqlParameter("@dato3", item.Email));
-        cmd.Parameters.Add(new SqlParameter("@dato4", item.Password));
-        cmd.Parameters.Add(new SqlParameter("@dato5", item.NumeroTelefono));
-
-        int affectedRows = cmd.ExecuteNonQuery();
-    }
+//try
+//{
+//    connessioneSql.Open();
 
 
-}
-catch (Exception ex)
-{
-    Console.WriteLine(ex.Message);
-}
-finally
-{
-    connessioneSql.Close();
-}
+//    int i = 1;
+//    foreach (var item in biblioteca.ListaUtenti)
+//    {
+//        string query = "INSERT INTO Utente (id, cognome, nome, email, password, numeroDiTelefono) VALUES (@dato1, @dato2, @dato3, @dato4, @dato5, @dato6)";
+//        SqlCommand cmd = new SqlCommand(query, connessioneSql);
+//        cmd.Parameters.Add(new SqlParameter("@dato1", i));
+//        cmd.Parameters.Add(new SqlParameter("@dato2", item.Cognome));
+//        cmd.Parameters.Add(new SqlParameter("@dato3", item.Nome));
+//        cmd.Parameters.Add(new SqlParameter("@dato4", item.Email));
+//        cmd.Parameters.Add(new SqlParameter("@dato5", item.Password));
+//        cmd.Parameters.Add(new SqlParameter("@dato6", item.NumeroTelefono));
+//        i++;
+//        int affectedRows = cmd.ExecuteNonQuery();
+
+//    }
+
+
+//}
+//catch (Exception ex)
+//{
+//    Console.WriteLine(ex.Message);
+//}
+//finally
+//{
+//    connessioneSql.Close();
+//}
+
+//try
+//{
+//    connessioneSql.Open();
+
+
+//    int i = 1;
+//    foreach (var item in biblioteca.ListaDocumenti)
+//    {
+//        string query = "INSERT INTO Documento (id, titolo, anno, settore, stato, scaffale, autore) VALUES (@dato1, @dato2, @dato3, @dato4, @dato5, @dato6, @dato7)";
+//        SqlCommand cmd = new SqlCommand(query, connessioneSql);
+//        cmd.Parameters.Add(new SqlParameter("@dato1", i));
+//        cmd.Parameters.Add(new SqlParameter("@dato2", item.Titolo));
+//        cmd.Parameters.Add(new SqlParameter("@dato3", item.Anno));
+//        cmd.Parameters.Add(new SqlParameter("@dato4", item.Settore));
+//        cmd.Parameters.Add(new SqlParameter("@dato5", item.Stato));
+//        cmd.Parameters.Add(new SqlParameter("@dato6", item.Scaffale));
+//        cmd.Parameters.Add(new SqlParameter("@dato7", item.Autore));
+//        i++;
+//        int affectedRows = cmd.ExecuteNonQuery();
+//    }
+
+
+//}
+//catch (Exception ex)
+//{
+//    Console.WriteLine(ex.Message);
+//}
+//finally
+//{
+//    connessioneSql.Close();
+//}
 
 
 public class Biblioteca
