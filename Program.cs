@@ -1,4 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
+
 Console.WriteLine("Hello, World!");
 
 //dotnet add package System.Data.SqlClient andato a buon fine
@@ -17,6 +20,47 @@ Console.WriteLine("Hello, World!");
 
 //using System.Diagnostics.Metrics;
 //using System.Runtime.ConstrainedExecution;
+
+Biblioteca biblioteca = new Biblioteca();
+
+
+//creazione pseudo clienti
+for (int i = 0; i < 100; i++)
+{
+    Random rand = new Random();
+
+    string nome = "utente" + i;
+    string cognome = "cognome" + i;
+    string email = "utente" + i;
+    string password = "utente" + i;
+    int numeroTelefono = rand.Next(111111111,999999999) ;
+    Utente utente = new Utente(cognome,nome,email,password,numeroTelefono);
+    biblioteca.ListaUtenti.Add(utente);
+}
+
+for (int i = 0; i < 100; i++)
+{
+    string[] seTTore = { "horror", "fantasy", "story", "math" };
+    string[] auTTore = { "gianni", "maniaco", "storto", "pollo" };
+    Random rand = new Random();
+
+
+
+    string titolo = "titolo" + i;
+    string anno = new DateTime( rand.Next(1900,2022),rand.Next(1,12),rand.Next(1,28) ).ToString("D");
+    string settore = seTTore[rand.Next(0,3)];
+    string scaffale = seTTore[rand.Next(0, 3)] + i;
+    string autore = auTTore[rand.Next(0, 3)];
+    Documento documento = new Documento(titolo, anno, settore, scaffale, autore);
+    biblioteca.ListaDocumenti.Add(documento);
+}
+
+foreach (var item in biblioteca.ListaUtenti)
+{
+    Console.WriteLine(item.Nome);
+}
+
+
 
 public class Biblioteca
 {
@@ -78,21 +122,45 @@ public class Documento
     //un autore (Nome, Cognome).
     public string Autore { get; set; }
 
-    public Documento(string codice, string titolo, string anno, string settore, bool stato, string scaffale, string autore)
+    public Documento( string titolo, string anno, string settore,string scaffale, string autore)
     {
-        Codice = codice;
+        Codice = Generacodice();
         Titolo = titolo;
         Anno = anno;
         Settore = settore;
-        Stato = stato;
+        Stato = true;
         Scaffale = scaffale;
         Autore = autore;
     }
 
+    public void ModificaStato()
+    {
+        Stato = !Stato;
+    } 
+
+    public string Generacodice()
+    {
+        string[] vocale = { "a", "e", "i", "o", "u" };
+        string codice = "";
+        for (int i = 0; i < 10; i++)
+        {
+            Random random = new Random();
+            if(i%2 == 0)
+            {
+                codice += (i + random.Next(1, 5));
+            }
+            else
+            {
+                codice += vocale[random.Next(0, 4)];
+            }
+        }
+        return codice;
+    }
 }
 
 public class Utente
 {
+
     //cognome,
     public string Cognome { get; set; }
 
@@ -107,6 +175,14 @@ public class Utente
 
     //recapito telefonico,
     public int NumeroTelefono { get; set; }
+    public Utente(string cognome, string nome, string email, string password, int numeroTelefono)
+    {
+        Cognome = cognome;
+        Nome = nome;
+        Email = email;
+        Password = password;
+        NumeroTelefono = numeroTelefono;
+    }
 }
 
 
