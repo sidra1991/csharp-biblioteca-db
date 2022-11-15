@@ -1,8 +1,26 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
+using System.Data.SqlClient;
+using System;
 
 Console.WriteLine("Hello, World!");
+
+string stringaDiConnessione = "Data Source=localhost;Initial Catalog=biblioteca-DB;Integrated Security=True";
+
+SqlConnection connessioneSql = new SqlConnection(stringaDiConnessione);
+
+//try
+//{
+//    connessioneSql.Open();
+//}
+//catch (Exception ex)
+//{
+//    Console.WriteLine(ex.Message);
+//}finally
+//{
+//    connessioneSql.Close();
+//}
 
 //dotnet add package System.Data.SqlClient andato a buon fine
 
@@ -32,7 +50,7 @@ for (int i = 0; i < 100; i++)
     string nome = "utente" + i;
     string cognome = "cognome" + i;
     string email = "utente" + i;
-    string password = "utente" + i;
+    string password = "utente" + i + "@email.it" ;
     int numeroTelefono = rand.Next(111111111,999999999) ;
     Utente utente = new Utente(cognome,nome,email,password,numeroTelefono);
     biblioteca.ListaUtenti.Add(utente);
@@ -60,6 +78,33 @@ foreach (var item in biblioteca.ListaUtenti)
     Console.WriteLine(item.Nome);
 }
 
+try
+{
+    connessioneSql.Open();
+    string query = "INSER INTO Utente (cognome, nome, email, password, numeroTelefono) VALUES (@dato1, @dato2, @dato3, @dato4, @dato5)";
+    SqlCommand cmd = new SqlCommand(query, connessioneSql);
+
+    foreach (var item in biblioteca.ListaUtenti)
+    {
+        cmd.Parameters.Add(new SqlParameter("@dato1",item.Cognome));
+        cmd.Parameters.Add(new SqlParameter("@dato2", item.Nome));
+        cmd.Parameters.Add(new SqlParameter("@dato3", item.Email));
+        cmd.Parameters.Add(new SqlParameter("@dato4", item.Password));
+        cmd.Parameters.Add(new SqlParameter("@dato5", item.NumeroTelefono));
+
+        int affectedRows = cmd.ExecuteNonQuery();
+    }
+
+
+}
+catch (Exception ex)
+{
+    Console.WriteLine(ex.Message);
+}
+finally
+{
+    connessioneSql.Close();
+}
 
 
 public class Biblioteca
@@ -93,7 +138,6 @@ public class Biblioteca
         }
         return trovato;
     }
-
 
 
 }
@@ -210,6 +254,25 @@ class Dvd
     // mentre per i dvd la durata.
     public DateTime Time { get; set; }
 }
+
+
+
+
+
+
+//Esercizio di oggi (nome repo): csharp - biblioteca - db
+//Riprendiamo l’esercizio della biblioteca considerando però aclune varianti:
+//non è necessario (ma consigliato) ragionare con gli oggetti.
+//evitiamo categoricamente la questione dell’eredità tra oggetti
+//potete implementare una singola tabella per tutti i documenti: ovviamente in questo caso ci dovrà essere una colonna che gestisce il tipo di documento
+//Realizzate almeno le tabelle dei documenti e dei prestiti con le opportune relazioni; qui potete inserire solo un campo nome cliente nel prestito e ignorare la parte di registrazione richiesta
+//nel database potete usare una sola colonna varchar, direttamente nel documento, per inserire il nome e cognome dell’autore
+//Bonus: implementate anche la tabella utente e i controllo di registrazione (che significa che l’utente è dentro al db e quindi prima di fare il prestito deve essere trovato dal bibliotecario attraverso il sistema)
+
+
+
+
+
 
 
 
