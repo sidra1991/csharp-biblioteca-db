@@ -44,8 +44,25 @@ Biblioteca biblioteca = new Biblioteca(connessioneSql);
 void menu()
 {
     Console.WriteLine("ora creo le crud e mi fermo,ho capito finalmente ma si sta facendo tardi");
-}
 
+    Console.WriteLine("1. crea nuovo utente");
+    Console.WriteLine("2. modifica utente");
+    Console.WriteLine("3. elimina utente");
+    int scelta = Convert.ToInt32(Console.ReadLine());
+    switch (scelta)
+    {
+        case 1:
+            biblioteca.CreaNuovoUtente(connessioneSql);
+            break ;
+        case 2:
+            biblioteca.UpdateUtente(connessioneSql);
+            break;
+        case 3:
+            biblioteca.eliminaUtente(connessioneSql);
+            break;
+    }
+}
+menu();
 //}
 //catch (Exception ex)
 //{
@@ -166,8 +183,129 @@ public class Biblioteca
 
     }
 
+    public void CreaNuovoUtente(SqlConnection connessioneSql)
+    {
+        Console.WriteLine("inserire cognome");
+        string cognome = Console.ReadLine();
+        Console.WriteLine("inserire nome");
+        string nome = Console.ReadLine();
+        Console.WriteLine("inserire email");
+        string email = Console.ReadLine();
+        Console.WriteLine("inserire password");
+        string password = Console.ReadLine();
+        Console.WriteLine("inserire numero di telefono");
+        int numeroTelefono =Convert.ToInt32( Console.ReadLine());
+        
+        try
+        {
+            connessioneSql.Open();
+            
+                string query = "INSERT INTO Utente (id, cognome, nome, email, password, numeroDiTelefono) VALUES (@dato1, @dato2, @dato3, @dato4, @dato5, @dato6)";
+                SqlCommand cmd = new SqlCommand(query, connessioneSql);
+            cmd.Parameters.Add(new SqlParameter("@dato1", utenti.Count + 1)) ;
+
+                cmd.Parameters.Add(new SqlParameter("@dato2", cognome));
+                cmd.Parameters.Add(new SqlParameter("@dato3", nome));
+                cmd.Parameters.Add(new SqlParameter("@dato4", email));
+                cmd.Parameters.Add(new SqlParameter("@dato5", password));
+                cmd.Parameters.Add(new SqlParameter("@dato6", numeroTelefono));
+
+                int affectedRows = cmd.ExecuteNonQuery();
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        finally
+        {
+            connessioneSql.Close();
+        }
 
 
+
+        Utente utente = new Utente(cognome, nome, email, password, numeroTelefono);
+        utenti.Add(utente);
+    }
+
+    public void UpdateUtente(SqlConnection connessioneSql)
+    {
+        int utente = CercaUtente();
+
+        Console.WriteLine("inserire cognome");
+        string cognome = Console.ReadLine();
+        Console.WriteLine("inserire nome");
+        string nome = Console.ReadLine();
+        Console.WriteLine("inserire email");
+        string email = Console.ReadLine();
+        Console.WriteLine("inserire password");
+        string password = Console.ReadLine();
+        Console.WriteLine("inserire numero di telefono");
+        int numeroTelefono = Convert.ToInt32(Console.ReadLine());
+
+        try
+        {
+            connessioneSql.Open();
+
+            string query = "UPDATE Utente  SET cognome=@dato2, nome=@dato3, email=@dato4, password=@dato5, numeroDiTelefono=@dato6  WHERE Id=@Id;" ;
+            SqlCommand cmd = new SqlCommand(query, connessioneSql);
+            cmd.Parameters.Add(new SqlParameter("@Id", utente));
+            cmd.Parameters.Add(new SqlParameter("@dato2", cognome));
+            cmd.Parameters.Add(new SqlParameter("@dato3", nome));
+            cmd.Parameters.Add(new SqlParameter("@dato4", email));
+            cmd.Parameters.Add(new SqlParameter("@dato5", password));
+            cmd.Parameters.Add(new SqlParameter("@dato6", numeroTelefono));
+
+            int affectedRows = cmd.ExecuteNonQuery();
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        finally
+        {
+            connessioneSql.Close();
+        }
+
+
+    }
+
+    public void eliminaUtente(SqlConnection connessioneSql)
+    {
+        try
+        {
+            int utente = CercaUtente();
+            connessioneSql.Open();
+
+            string query = "DELETE FROM Utente WHERE Id = @id";
+            SqlCommand cmd = new SqlCommand(query, connessioneSql);
+            cmd.Parameters.Add(new SqlParameter("@id", utente));
+            int affectedRows = cmd.ExecuteNonQuery();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        finally
+        {
+            connessioneSql.Close();
+        }
+
+    }
+    public int CercaUtente()
+    {
+        Console.WriteLine("seleziona l'idice del utente che ti interessa");
+        int i = 1;
+        foreach (Utente utente in utenti)
+        {
+            Console.WriteLine(i + ". " + utente.Cognome);
+            i++;
+        }
+
+
+        return Convert.ToInt32(Console.ReadLine()) ;
+    }
 }
 
 public class Documento
